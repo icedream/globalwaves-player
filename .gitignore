@@ -1,4 +1,10 @@
-/[Oo]bj/
-/[Bb]in/
-*.user
+# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
+bin
+obj
+
+# Unneeded files
 *.suo
+*.user
+
+# mstest test results
+TestResults
