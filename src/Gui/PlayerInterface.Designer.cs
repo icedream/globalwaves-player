@@ -69,7 +69,7 @@
             // waveformTimer
             // 
             this.waveformTimer.Enabled = true;
-            this.waveformTimer.Interval = 50;
+            this.waveformTimer.Interval = 10;
             this.waveformTimer.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // waveformL

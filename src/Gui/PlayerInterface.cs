@@ -42,10 +42,9 @@ namespace globalwaves.Player.Gui
             player.Output = output;
         }
 
+        DateTime dt = DateTime.Now;
         void player_SampleReceived(object sender, NAudio.Wave.SampleEventArgs e)
         {
-            if (audioDataL.Count == 5000) audioDataL.RemoveAt(0);
-
             audioDataL.Add(e.Left);
         }
 
@@ -95,22 +94,23 @@ namespace globalwaves.Player.Gui
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            try
-            {
-                lock (audioDataL)
+            CheckForIllegalCrossThreadCalls = false;
+            System.Threading.Tasks.Task.Factory.StartNew(() => {
+                try
                 {
-                    if (audioDataL.Count == 0)
-                        return;
-                    var data = audioDataL.ToArray<float>();
-                    audioDataL.Clear();
-                    DrawNormalizedAudio(ref data, this.waveformL, Color.DarkBlue);
-                    data = null;
+                    lock (audioDataL)
+                    {
+                        if (audioDataL.Count > 500)
+                            audioDataL.RemoveRange(0, audioDataL.Count - 500);
+                        var data = audioDataL.ToArray<float>();
+                        DrawNormalizedAudio(ref data, this.waveformL, Color.DarkBlue);
+                    }
                 }
-            }
-            catch { { } }
+                catch { { } }
+            });
         }
 
-        public static void DrawNormalizedAudio(ref float[] data, PictureBox pb, Color color)
+        public void DrawNormalizedAudio(ref float[] data, PictureBox pb, Color color)
         {
             Bitmap bmp;
             if (pb.Image == null)
@@ -132,25 +132,26 @@ namespace globalwaves.Player.Gui
                 g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                g.Clear(pb.BackColor);
+                g.Clear(Color.Transparent);
                 Pen pen = new Pen(color);
                 int size = data.Length;
-                for (int iPixel = 0; iPixel < width; iPixel++)
+                for (int iPixel = 0; iPixel < width; iPixel+= width / 100)
                 {
+                    float min = 0;
+                    float max = 0;
                     // determine start and end points within WAV
                     int start = (int)((float)iPixel * ((float)size / (float)width));
                     int end = (int)((float)(iPixel + 1) * ((float)size / (float)width));
-                    float min = float.MaxValue;
-                    float max = float.MinValue;
                     for (int i = start; i < end; i++)
                     {
                         float val = data[i];
                         min = val < min ? val : min;
                         max = val > max ? val : max;
                     }
+                    pen.Color = Color.FromArgb((byte)(64 + (max - min) * 128), color);
                     int yMax = BORDER_WIDTH + height - (int)((max + 1) * .5 * height);
                     int yMin = BORDER_WIDTH + height - (int)((min + 1) * .5 * height);
-                    g.DrawLine(pen, iPixel + BORDER_WIDTH - 1, yMax,
+                    g.DrawLine(pen, iPixel + BORDER_WIDTH, yMax,
                         iPixel + BORDER_WIDTH, yMin);
                 }
             }
