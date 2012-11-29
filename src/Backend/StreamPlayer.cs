@@ -10,10 +10,13 @@ using System.Diagnostics;
 
 // Audio engine
 using NAudio;
-using NAudio.Codecs;
 using NAudio.Mixer;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+
+// Codecs
+using NAudio.Codecs;
+
 
 namespace globalwaves.Player.Backend
 {
@@ -44,7 +47,7 @@ namespace globalwaves.Player.Backend
         // Audio chain
         private FadeInOutSampleProvider _fade;
         private VolumeSampleProvider _volume;
-        private AcmMp3FrameDecompressor _decoder;
+        private AcmMp3FrameDecompressor _decoderMp3;
         private BufferedWaveProvider _wavebuffer;
         private WaveToSampleProvider _wavesampler;
         private FixedBufferedStream stream;
@@ -187,7 +190,7 @@ namespace globalwaves.Player.Backend
                     try
                     {
                         // Direct buffer for audio
-                        _wavebuffer = new BufferedWaveProvider(_decoder.OutputFormat);
+                        _wavebuffer = new BufferedWaveProvider(_decoderMp3.OutputFormat);
                         _wavebuffer.BufferDuration = TimeSpan.FromSeconds(10);
 
                         // Start buffering and playback
@@ -305,31 +308,37 @@ namespace globalwaves.Player.Backend
                 SampleReceived.Invoke(this, e);
         }
 
-        private void _buffer(Stream mp3input)
+        private void _buffer(Stream input)
         {
             Console.WriteLine("[Initial buffering] Meta interval: {0}", this.StationInformation.ContainsKey("icy-metaint") ? long.Parse(this.StationInformation["icy-metaint"]) : -1);
-            
+
             // Auto-fix the stream and auto-parse metadata
-            stream = new FixedBufferedStream(
-                mp3input,
-                this.StationInformation.ContainsKey("icy-metaint") ? long.Parse(this.StationInformation["icy-metaint"]) : -1
-            );
+            stream =
+                new FixedBufferedStream(
+                    input,
+                    this.StationInformation.ContainsKey("icy-metaint") ? long.Parse(this.StationInformation["icy-metaint"]) : -1
+                );
 
             // Read first frame
             this.Status = StreamStatus.Buffering;
-            frame = Mp3Frame.LoadFromStream(stream);
-
-            Console.WriteLine("[Initial buffering] Initial frame: {0} bytes with {1} samples", frame.FrameLength, frame.SampleCount);
-            
-            // Make a decoder which can decode that (and sequentially following) frames
-            // The decoder will decode to 16-bit samples
-            _decoder = new AcmMp3FrameDecompressor(new Mp3WaveFormat(frame.SampleRate, frame.ChannelMode == ChannelMode.Mono ? 1 : 2, frame.FrameLength, frame.BitRate));
-            Console.WriteLine("[Initial buffering] MP3 decoder will encode to {0}-encoded wave format.", _decoder.OutputFormat.Encoding);
+            switch (Codec)
+            {
+                case StreamCodec.MP3:
+                    // Make a decoder which can decode that (and sequentially following) frames
+                    // The decoder will decode to 16-bit samples
+                    frame = Mp3Frame.LoadFromStream(stream);
+                    _decoderMp3 = new AcmMp3FrameDecompressor(new Mp3WaveFormat(frame.SampleRate, frame.ChannelMode == ChannelMode.Mono ? 1 : 2, frame.FrameLength, frame.BitRate));
+                    Console.WriteLine("[Initial buffering] MP3 decoder will encode to {0}-encoded wave format.", _decoderMp3.OutputFormat.Encoding);
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
         private void _bufferLoop()
         {
             Console.WriteLine("[Buffering thread] Started.");
+            _wavebuffer.DiscardOnBufferOverflow = true;
 
             // Buffering loop
             do
@@ -351,27 +360,32 @@ namespace globalwaves.Player.Backend
                         MetadataChanged.Invoke(this, new EventArgs());
                 }
 
-                // Decompress a frame into a seperated buffer
-                long bufferSize = 176000;
+                // Seperated buffer
+                long bufferSize = 1024
+                    * (Codec == StreamCodec.MP3 ? 128 : 8); // 128 kB for MP3, 8 kB for OGG/AACplus
                 byte[] buffer = new byte[bufferSize];
-                int decompressedLength = _decoder.DecompressFrame(frame, buffer, 0);
+                int decompressedLength = 0;
 
-                // If buffer overfills, clear the buffer
-                if (_wavebuffer.BufferLength - _wavebuffer.BufferedBytes < decompressedLength)
+                switch (Codec)
                 {
-                    Console.WriteLine("[Buffering thread] Buffer is overrunning, clearing...");
-                    _wavebuffer.ClearBuffer();
+                    case StreamCodec.MP3:
+                        // Decompress the frame
+                        decompressedLength = _decoderMp3.DecompressFrame(frame, buffer, 0);
+
+                        // Read next frame
+                        frame = Mp3Frame.LoadFromStream(stream);
+
+                        // Add the decompressed frame (samples) into the audio buffer for later playback
+                        _wavebuffer.AddSamples(buffer, 0, decompressedLength);
+                        break;
+                    default:
+                        throw new NotSupportedException();
                 }
 
-                // Add the decompressed frame (samples) into the audio buffer for later playback
-                _wavebuffer.AddSamples(buffer, 0, decompressedLength);
-
-                // Read next frame
-                frame = Mp3Frame.LoadFromStream(stream);
 
             } while (true);
 
-            _decoder.Dispose();
+            _decoderMp3.Dispose();
 
         }
     }
