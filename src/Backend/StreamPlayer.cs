@@ -171,6 +171,8 @@ namespace globalwaves.Player.Backend
                     var stream_req = (HttpWebRequest)HttpWebRequest.Create(stream_url);
                     stream_req.UserAgent = _userAgent;
                     stream_req.Headers.Add("icy-metadata", "1"); // Request icecast to also send metadata
+                    stream_req.Timeout = 3000;
+                    stream_req.ReadWriteTimeout = 5000;
                     var stream_resp = stream_req.GetResponse();
 
                     // Save stream info
@@ -203,6 +205,14 @@ namespace globalwaves.Player.Backend
                     }
                     catch (OperationCanceledException)
                     {
+                        { }
+                    }
+                    catch (Exception error)
+                    {
+                        Console.WriteLine("Load thread error: {0}", error.ToString());
+                    }
+                    if (_playThread.Status == TaskStatus.WaitingForChildrenToComplete || _playThread.Status == TaskStatus.Running)
+                    {
                         Console.WriteLine("Waiting for playback thread to exit...");
                         try
                         {
@@ -210,10 +220,6 @@ namespace globalwaves.Player.Backend
                         }
                         catch { { } }
                         _playThread.Dispose();
-                    }
-                    catch (Exception error)
-                    {
-                        Console.WriteLine("Load thread error: {0}", error.ToString());
                     }
                     if (_bufferThread.Status == TaskStatus.WaitingForChildrenToComplete || _bufferThread.Status == TaskStatus.Running)
                     {
@@ -264,12 +270,14 @@ namespace globalwaves.Player.Backend
                 if (_cancel_play.IsCancellationRequested)
                 {
                     Console.WriteLine("[Playback thread] Cancellation requested.");
-                    Console.WriteLine("[Playback thread] Stopping playback with fade out...");
 
-                    // Fade out
+                    // Fade out and stop
+                    Console.WriteLine("[Playback thread] Fading out and stopping...");
                     _fade.BeginFadeOut(500);
                     Thread.Sleep(500);
                     Output.Stop();
+                    Console.WriteLine("[Playback thread] Output stopped.");
+                    this.Status = StreamStatus.Stopped;
 
                     //_cancel_play_token.ThrowIfCancellationRequested();
                     //Console.WriteLine("[Playback thread] WARNING: Cancellation token is not cleanly set!");
@@ -354,10 +362,16 @@ namespace globalwaves.Player.Backend
                 // Checking metadata
                 if (Metadata != stream.Metadata)
                 {
-                    Console.WriteLine("[Buffering thread] Metadata has been changed to \"{0}\"", stream.Metadata);
                     this.Metadata = stream.Metadata;
-                    if (MetadataChanged != null)
-                        MetadataChanged.Invoke(this, new EventArgs());
+                    Task.Factory.StartNew(() =>
+                    {
+                        Console.WriteLine("[Buffering thread] Metadata has been changed to \"{0}\"", stream.Metadata);
+                        Console.WriteLine("[Buffering thread] Delaying because of the buffering...", stream.Metadata);
+                        Thread.Sleep(_wavebuffer.BufferedDuration);
+                        Console.WriteLine("[Buffering thread] Exposing metadata NOW.", stream.Metadata);
+                        if (MetadataChanged != null)
+                            MetadataChanged.Invoke(this, new EventArgs());
+                    });
                 }
 
                 // Seperated buffer
