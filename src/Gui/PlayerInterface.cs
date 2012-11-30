@@ -15,10 +15,10 @@ namespace globalwaves.Player.Gui
         StreamPlayer player = new StreamPlayer();
 
         delegate void TextVoidDelegate(string a);
-        delegate void WaveFormDelegate(NAudio.Wave.WaveStream a);
         TextVoidDelegate nowplayingdel;
         TextVoidDelegate statusdel;
-        WaveFormDelegate wavedel;
+
+        bool rejectGuiChanges = false;
 
         List<float> audioDataL = new List<float>();
 
@@ -30,7 +30,6 @@ namespace globalwaves.Player.Gui
 
             nowplayingdel = new TextVoidDelegate(SetNowPlaying);
             statusdel = new TextVoidDelegate(SetStatus);
-            wavedel = new WaveFormDelegate(SetWave);
 
             player.MetadataChanged += new EventHandler(player_MetadataChanged);
             player.StatusChanged += new EventHandler(player_StatusChanged);
@@ -60,19 +59,30 @@ namespace globalwaves.Player.Gui
 
         public void SetNowPlaying(string metadata)
         {
-            // TODO: Add now playing handler
+            if (metadata == null)
+                return;
+            if (this.Disposing || this.IsDisposed)
+                return;
+            if (rejectGuiChanges) return;
+            if (this.InvokeRequired)
+                this.Invoke(nowplayingdel, metadata);
+            else
+            {
+                var g = System.Text.RegularExpressions.Regex.Match(metadata, @"^(?<artist>.+) \- (?<title>.+)$").Groups;
+                this.lblArtist.Text = g["artist"].Value;
+                this.lblTitle.Text = g["title"].Value;
+            }
         }
 
         public void SetStatus(string status)
         {
+            if (this.Disposing || this.IsDisposed)
+                return;
+            if (rejectGuiChanges) return;
             if (this.txtStatus.InvokeRequired)
                 this.txtStatus.Invoke(statusdel, status);
             else
                 this.txtStatus.Text = status;
-        }
-
-        public void SetWave(NAudio.Wave.WaveStream stream)
-        {
         }
 
         private void btnPlay_Click(object sender, EventArgs e)
@@ -94,71 +104,149 @@ namespace globalwaves.Player.Gui
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            CheckForIllegalCrossThreadCalls = false;
-            System.Threading.Tasks.Task.Factory.StartNew(() => {
+            if (rejectGuiChanges) return;
+            //System.Threading.Tasks.Task.Factory.StartNew(() => {
                 try
                 {
                     lock (audioDataL)
                     {
-                        if (audioDataL.Count > 500)
-                            audioDataL.RemoveRange(0, audioDataL.Count - 500);
-                        var data = audioDataL.ToArray<float>();
-                        DrawNormalizedAudio(ref data, this.waveformL, Color.DarkBlue);
+                        if (audioDataL.Count == 0 && player.Status == StreamStatus.Playing)
+                            return;
+                        else
+                        {
+                            audioDataL.Add(0);
+                            audioDataL.Add(0);
+                            audioDataL.Add(0);
+                            audioDataL.Add(0);
+                            audioDataL.Add(0);
+                        }
+                        float[] data = audioDataL.ToArray<float>();
+                        audioDataL.Clear();
+                        Image img = GetWaveform(ref data, Color.White, this.waveformL.Width, this.waveformL.Height);
+                        this.waveformL.Image = BlurWaveform(img, waveformL.Image, this.BackColor);
+                        var notify_bmp =
+                            (player.Status == StreamStatus.Playing ? img : Properties.Resources.satellite_icon_iconfinder.ToBitmap())
+                            .GetThumbnailImage(
+                                    16, 16,
+                                    new Image.GetThumbnailImageAbort(() => { return true; }),
+                                    IntPtr.Zero
+                            ) as Bitmap;
+                        var g = Graphics.FromImage(notify_bmp);
+                        Image b = null;
+                        switch (player.Status)
+                        {
+                            case StreamStatus.Buffering: b = Properties.Resources.buffering; break;
+                            case StreamStatus.Connecting: b = Properties.Resources.arrow_dots; break;
+                        }
+                        if(b != null)
+                            g.DrawImage(
+                                b,
+                                4f, 4f, 12f, 12f
+                            );
+                        notifyIcon1.Icon = Icon.FromHandle(notify_bmp.GetHicon());
                     }
                 }
                 catch { { } }
-            });
+            //});
         }
 
-        public void DrawNormalizedAudio(ref float[] data, PictureBox pb, Color color)
+        public Image BlurWaveform(Image newwave, Image oldwave)
         {
-            Bitmap bmp;
-            if (pb.Image == null)
+            return BlurWaveform(newwave, oldwave, Color.Transparent);
+        }
+        public Image BlurWaveform(Image newwave, Image oldwave, Color backColor)
+        {
+            var output = new Bitmap(newwave.Width, newwave.Height);
+
+            if (oldwave == null)
             {
-                bmp = new Bitmap(pb.Width, pb.Height);
+                Console.WriteLine("[DrawWaveform] Cloning new bitmap as old bitmap (empty usually).");
+                oldwave = output.Clone() as Image;
             }
             else
-            {
-                bmp = (Bitmap)pb.Image;
-            }
+                oldwave = oldwave
+                    .GetThumbnailImage(
+                        oldwave.Width / 4, oldwave.Height / 4,
+                        new Image.GetThumbnailImageAbort(() => { return true; }),
+                        IntPtr.Zero
+                    )
+                    .GetThumbnailImage(
+                        oldwave.Width, oldwave.Height,
+                        new Image.GetThumbnailImageAbort(() => { return true; }),
+                        IntPtr.Zero
+                    );
 
-            int BORDER_WIDTH = 5;
-            int width = bmp.Width - (2 * BORDER_WIDTH);
-            int height = bmp.Height - (2 * BORDER_WIDTH);
+            // Blur old waveform
+            var attrib = new System.Drawing.Imaging.ImageAttributes();
+            var matrix = new System.Drawing.Imaging.ColorMatrix();
+            matrix.Matrix33 = 0.9f; // opactity
+            attrib.SetColorMatrix(matrix);
+            var g = Graphics.FromImage(output);
+            if(backColor != null) g.Clear(backColor);
+            g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+            g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+            g.DrawImage(
+                oldwave, // old bitmap
+                new Rectangle(-2, 0, output.Width, output.Height), // Destination rectangle
+                0, 0, oldwave.Width, oldwave.Height, // Source rectangle
+                GraphicsUnit.Pixel, // Copy pixel-exact
+                attrib // Matrix with opactiy
+                );
+            g.DrawImage(
+                newwave,
+                0, 0
+                );
+            g.Dispose();
 
-            using (Graphics g = Graphics.FromImage(bmp))
+            return output;
+        }
+
+        public Image GetWaveform(ref float[] data, Color color, int width, int height)
+        {
+            Bitmap new_bitmap = new Bitmap(width, height);
+
+            using (Graphics g = Graphics.FromImage(new_bitmap))
             {
-                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
-                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 g.Clear(Color.Transparent);
+
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+
+                // Draw new waveform
                 Pen pen = new Pen(color);
-                int size = data.Length;
-                for (int iPixel = 0; iPixel < width; iPixel+= width / 100)
+                pen.Color = color;
+                pen.Width = 1;
+                float pos = 0;
+                float old_pos = 0;
+                for (int i = 1; i < data.Length; i++)
                 {
-                    float min = 0;
-                    float max = 0;
-                    // determine start and end points within WAV
-                    int start = (int)((float)iPixel * ((float)size / (float)width));
-                    int end = (int)((float)(iPixel + 1) * ((float)size / (float)width));
-                    for (int i = start; i < end; i++)
-                    {
-                        float val = data[i];
-                        min = val < min ? val : min;
-                        max = val > max ? val : max;
-                    }
-                    pen.Color = Color.FromArgb((byte)(64 + (max - min) * 128), color);
-                    int yMax = BORDER_WIDTH + height - (int)((max + 1) * .5 * height);
-                    int yMin = BORDER_WIDTH + height - (int)((min + 1) * .5 * height);
-                    g.DrawLine(pen, iPixel + BORDER_WIDTH, yMax,
-                        iPixel + BORDER_WIDTH, yMin);
+                    old_pos = pos;
+                    pos = (float)new_bitmap.Width * (float)(i + 1) / (float)data.Length;
+                    g.DrawLine(pen,
+                        old_pos, // Old position
+                        new_bitmap.Height - (int)((data[i - 1] + 1) * .5 * new_bitmap.Height),
+
+                        pos, // New position
+                        new_bitmap.Height - (int)((data[i] + 1) * .5 * new_bitmap.Height)
+                        );
                 }
             }
+            return new_bitmap;
+        }
 
-            pb.Image = bmp;
+        private void PlayerInterface_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            rejectGuiChanges = true;
+            waveformTimer.Stop();
+        }
 
-            pb.Refresh();
+        private void volumeSlider1_VolumeChanged(object sender, EventArgs e)
+        {
+            player.Volume = volumeSlider1.Volume;
         }
 
     }

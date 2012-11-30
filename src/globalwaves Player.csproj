@@ -71,6 +71,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -83,6 +84,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Icon\arrow_dots.png" />
+    <None Include="Icon\buffering.png" />
+    <None Include="Icon\playing.png" />
     <Content Include="Icon\satellite_icon_iconfinder.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -95,7 +99,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)\init.bat"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
