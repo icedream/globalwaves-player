@@ -5,5 +5,5 @@
 ::	%nuget% update %nugetopt% -Self
 ::)
 
-echo * Updating NuGet packages...
-%nuget% update %nugetopt% "globalwaves Player.sln"
+echo Updating NuGet packages... | xecho /a:F
+%nuget% update %nugetopt% "globalwaves Player.sln" | xecho /a:7 /f:"\t{}"
