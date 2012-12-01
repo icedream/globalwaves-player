@@ -148,7 +148,7 @@ namespace globalwaves.Player.Gui
                             b,
                             4f, 4f, 12f, 12f
                         );
-                    notifyIcon1.Icon = Icon.FromHandle(notify_bmp.GetHicon());
+                    playerTrayIcon.Icon = Icon.FromHandle(notify_bmp.GetHicon());
                 }
             }
             catch(Exception error)
@@ -278,6 +278,27 @@ namespace globalwaves.Player.Gui
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             player.Stop(false);
+        }
+
+        private void tranceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            player.Channel = "trance";
+            player.Stop(true);
+            player.Play();
+        }
+
+        private void dnBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            player.Channel = "dnb";
+            player.Stop(true);
+            player.Play();
+        }
+
+        private void mainToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            player.Channel = "main";
+            player.Stop(true);
+            player.Play();
         }
 
     }

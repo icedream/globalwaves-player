@@ -37,13 +37,16 @@
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblArtist = new System.Windows.Forms.Label();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.playerTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.playerTrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tranceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dnBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.waveformL)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
+            this.playerTrayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnPlay
@@ -125,39 +128,65 @@
             this.volumeSlider1.TabIndex = 6;
             this.volumeSlider1.VolumeChanged += new System.EventHandler(this.volumeSlider1_VolumeChanged);
             // 
-            // notifyIcon1
+            // playerTrayIcon
             // 
-            this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.Visible = true;
+            this.playerTrayIcon.ContextMenuStrip = this.playerTrayMenu;
+            this.playerTrayIcon.Text = "globalwaves Player";
+            this.playerTrayIcon.Visible = true;
             // 
-            // contextMenuStrip1
+            // playerTrayMenu
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.playerTrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.playToolStripMenuItem,
             this.stopToolStripMenuItem,
             this.quitToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(108, 70);
+            this.playerTrayMenu.Name = "contextMenuStrip1";
+            this.playerTrayMenu.Size = new System.Drawing.Size(153, 92);
             // 
             // playToolStripMenuItem
             // 
+            this.playToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tranceToolStripMenuItem,
+            this.dnBToolStripMenuItem,
+            this.mainToolStripMenuItem});
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.playToolStripMenuItem.Text = "Play";
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
+            // tranceToolStripMenuItem
+            // 
+            this.tranceToolStripMenuItem.Name = "tranceToolStripMenuItem";
+            this.tranceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tranceToolStripMenuItem.Text = "Trance";
+            this.tranceToolStripMenuItem.Click += new System.EventHandler(this.tranceToolStripMenuItem_Click);
+            // 
+            // dnBToolStripMenuItem
+            // 
+            this.dnBToolStripMenuItem.Name = "dnBToolStripMenuItem";
+            this.dnBToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dnBToolStripMenuItem.Text = "DnB";
+            this.dnBToolStripMenuItem.Click += new System.EventHandler(this.dnBToolStripMenuItem_Click);
+            // 
+            // mainToolStripMenuItem
+            // 
+            this.mainToolStripMenuItem.Name = "mainToolStripMenuItem";
+            this.mainToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.mainToolStripMenuItem.Text = "Main";
+            this.mainToolStripMenuItem.Click += new System.EventHandler(this.mainToolStripMenuItem_Click);
             // 
             // PlayerInterface
             // 
@@ -179,7 +208,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PlayerInterface_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PlayerInterface_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.waveformL)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.playerTrayMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -195,10 +224,13 @@
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblArtist;
         private NAudio.Gui.VolumeSlider volumeSlider1;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.NotifyIcon playerTrayIcon;
+        private System.Windows.Forms.ContextMenuStrip playerTrayMenu;
         private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tranceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dnBToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mainToolStripMenuItem;
     }
 }
