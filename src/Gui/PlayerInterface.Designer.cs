@@ -38,11 +38,17 @@
             this.lblArtist = new System.Windows.Forms.Label();
             this.volumeSlider1 = new NAudio.Gui.VolumeSlider();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.waveformL)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnPlay
             // 
+            this.btnPlay.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnPlay.Location = new System.Drawing.Point(368, 200);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(48, 24);
@@ -53,6 +59,7 @@
             // 
             // btnStop
             // 
+            this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnStop.Location = new System.Drawing.Point(422, 200);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(48, 24);
@@ -64,6 +71,7 @@
             // txtStatus
             // 
             this.txtStatus.AutoSize = true;
+            this.txtStatus.BackColor = System.Drawing.Color.Transparent;
             this.txtStatus.Location = new System.Drawing.Point(12, 206);
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.Size = new System.Drawing.Size(42, 13);
@@ -73,11 +81,12 @@
             // waveformTimer
             // 
             this.waveformTimer.Enabled = true;
-            this.waveformTimer.Interval = 50;
+            this.waveformTimer.Interval = 10;
             this.waveformTimer.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // waveformL
             // 
+            this.waveformL.BackColor = System.Drawing.Color.Transparent;
             this.waveformL.Location = new System.Drawing.Point(0, -1);
             this.waveformL.Name = "waveformL";
             this.waveformL.Size = new System.Drawing.Size(95, 44);
@@ -87,6 +96,7 @@
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
+            this.lblTitle.BackColor = System.Drawing.Color.Transparent;
             this.lblTitle.Location = new System.Drawing.Point(101, 9);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(10, 13);
@@ -97,6 +107,7 @@
             // lblArtist
             // 
             this.lblArtist.AutoSize = true;
+            this.lblArtist.BackColor = System.Drawing.Color.Transparent;
             this.lblArtist.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblArtist.Location = new System.Drawing.Point(101, 22);
             this.lblArtist.Name = "lblArtist";
@@ -107,6 +118,7 @@
             // 
             // volumeSlider1
             // 
+            this.volumeSlider1.BackColor = System.Drawing.Color.Transparent;
             this.volumeSlider1.Location = new System.Drawing.Point(-1, 42);
             this.volumeSlider1.Name = "volumeSlider1";
             this.volumeSlider1.Size = new System.Drawing.Size(96, 14);
@@ -117,6 +129,35 @@
             // 
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.playToolStripMenuItem,
+            this.stopToolStripMenuItem,
+            this.quitToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(108, 70);
+            // 
+            // playToolStripMenuItem
+            // 
+            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.playToolStripMenuItem.Text = "Play";
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
+            // quitToolStripMenuItem
+            // 
+            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
             // PlayerInterface
             // 
@@ -138,6 +179,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PlayerInterface_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PlayerInterface_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.waveformL)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -154,5 +196,9 @@
         private System.Windows.Forms.Label lblArtist;
         private NAudio.Gui.VolumeSlider volumeSlider1;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
     }
 }

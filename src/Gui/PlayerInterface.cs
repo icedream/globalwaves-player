@@ -35,9 +35,12 @@ namespace globalwaves.Player.Gui
             player.StatusChanged += new EventHandler(player_StatusChanged);
             player.SampleReceived += new EventHandler<NAudio.Wave.SampleEventArgs>(player_SampleReceived);
 
+            /*
             var output = new NAudio.Wave.WaveOut();
             output.DesiredLatency = 200;
             output.NumberOfBuffers = 3;
+             */
+            var output = new NAudio.Wave.DirectSoundOut(100);
             player.Output = output;
         }
 
@@ -105,48 +108,57 @@ namespace globalwaves.Player.Gui
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (rejectGuiChanges) return;
+
             //System.Threading.Tasks.Task.Factory.StartNew(() => {
-                try
+            try
+            {
+                //waveformTimer.Stop();
+                lock (audioDataL)
                 {
-                    lock (audioDataL)
+                    if (audioDataL.Count == 0 && player.Status == StreamStatus.Playing)
+                        return;
+                    else
                     {
-                        if (audioDataL.Count == 0 && player.Status == StreamStatus.Playing)
-                            return;
-                        else
-                        {
-                            audioDataL.Add(0);
-                            audioDataL.Add(0);
-                            audioDataL.Add(0);
-                            audioDataL.Add(0);
-                            audioDataL.Add(0);
-                        }
-                        float[] data = audioDataL.ToArray<float>();
-                        audioDataL.Clear();
-                        Image img = GetWaveform(ref data, Color.White, this.waveformL.Width, this.waveformL.Height);
-                        this.waveformL.Image = BlurWaveform(img, waveformL.Image, this.BackColor);
-                        var notify_bmp =
-                            (player.Status == StreamStatus.Playing ? img : Properties.Resources.satellite_icon_iconfinder.ToBitmap())
-                            .GetThumbnailImage(
-                                    16, 16,
-                                    new Image.GetThumbnailImageAbort(() => { return true; }),
-                                    IntPtr.Zero
-                            ) as Bitmap;
-                        var g = Graphics.FromImage(notify_bmp);
-                        Image b = null;
-                        switch (player.Status)
-                        {
-                            case StreamStatus.Buffering: b = Properties.Resources.buffering; break;
-                            case StreamStatus.Connecting: b = Properties.Resources.arrow_dots; break;
-                        }
-                        if(b != null)
-                            g.DrawImage(
-                                b,
-                                4f, 4f, 12f, 12f
-                            );
-                        notifyIcon1.Icon = Icon.FromHandle(notify_bmp.GetHicon());
+                        audioDataL.Add(0);
+                        audioDataL.Add(0);
+                        audioDataL.Add(0);
+                        audioDataL.Add(0);
+                        audioDataL.Add(0);
                     }
+                    float[] data = audioDataL.ToArray<float>();
+                    audioDataL.Clear();
+                    Image img = GetWaveform(ref data, Color.White, this.waveformL.Width, this.waveformL.Height);
+                    this.waveformL.Image = BlurWaveform(img, waveformL.Image, this.BackColor);
+                    var notify_bmp =
+                        (player.Status == StreamStatus.Playing ? img : Properties.Resources.satellite_icon_iconfinder.ToBitmap())
+                        .GetThumbnailImage(
+                                16, 16,
+                                new Image.GetThumbnailImageAbort(() => { return true; }),
+                                IntPtr.Zero
+                        ) as Bitmap;
+                    var g = Graphics.FromImage(notify_bmp);
+                    Image b = null;
+                    switch (player.Status)
+                    {
+                        case StreamStatus.Buffering: b = Properties.Resources.buffering; break;
+                        case StreamStatus.Connecting: b = Properties.Resources.arrow_dots; break;
+                    }
+                    if (b != null)
+                        g.DrawImage(
+                            b,
+                            4f, 4f, 12f, 12f
+                        );
+                    notifyIcon1.Icon = Icon.FromHandle(notify_bmp.GetHicon());
                 }
-                catch { { } }
+            }
+            catch(Exception error)
+            {
+                Console.WriteLine("Error in waveform drawing: {0}", error.ToString());
+            }
+            finally
+            {
+                //waveformTimer.Start();
+            }
             //});
         }
 
@@ -203,6 +215,15 @@ namespace globalwaves.Player.Gui
             return output;
         }
 
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            Rectangle rc = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            using (System.Drawing.Drawing2D.LinearGradientBrush brush = new System.Drawing.Drawing2D.LinearGradientBrush(rc, Color.DarkBlue, Color.RoyalBlue, 45F))
+            {
+                e.Graphics.FillRectangle(brush, rc);
+            }
+        }
+
         public Image GetWaveform(ref float[] data, Color color, int width, int height)
         {
             Bitmap new_bitmap = new Bitmap(width, height);
@@ -247,6 +268,16 @@ namespace globalwaves.Player.Gui
         private void volumeSlider1_VolumeChanged(object sender, EventArgs e)
         {
             player.Volume = volumeSlider1.Volume;
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            player.Stop(false);
         }
 
     }
