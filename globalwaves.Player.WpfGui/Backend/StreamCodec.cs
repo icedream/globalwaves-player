@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace globalwaves.Player.Backend
+namespace globalwaves.Player
 {
     public enum StreamCodec
     {

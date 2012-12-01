@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace globalwaves.Player.Backend
+namespace globalwaves.Player
 {
     public class FixedBufferedStream : Stream
     {

@@ -36,9 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon\satellite_icon_iconfinder.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -48,10 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\FixedBufferedStream.cs" />
-    <Compile Include="Backend\StreamCodec.cs" />
-    <Compile Include="Backend\StreamPlayer.cs" />
-    <Compile Include="Backend\StreamStatus.cs" />
+    <Compile Include="..\globalwaves.Player.WpfGui\Backend\FixedBufferedStream.cs">
+      <Link>Backend\FixedBufferedStream.cs</Link>
+    </Compile>
+    <Compile Include="..\globalwaves.Player.WpfGui\Backend\StreamCodec.cs">
+      <Link>Backend\StreamCodec.cs</Link>
+    </Compile>
+    <Compile Include="..\globalwaves.Player.WpfGui\Backend\StreamPlayer.cs">
+      <Link>Backend\StreamPlayer.cs</Link>
+    </Compile>
+    <Compile Include="..\globalwaves.Player.WpfGui\Backend\StreamStatus.cs">
+      <Link>Backend\StreamStatus.cs</Link>
+    </Compile>
     <Compile Include="Gui\PlayerInterface.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,18 +95,25 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Icon\arrow_dots.png" />
-    <None Include="Icon\buffering.png" />
-    <None Include="Icon\playing.png" />
-    <Content Include="Icon\satellite_icon_iconfinder.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\libraries\NAudio\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\globalwaves.Player.WpfGui\Icon\icon_satellite.ico">
+      <Link>Icon\icon_satellite.ico</Link>
+    </Content>
+    <Content Include="..\globalwaves.Player.WpfGui\Icon\tray_buffering.png">
+      <Link>Icon\tray_buffering.png</Link>
+    </Content>
+    <Content Include="..\globalwaves.Player.WpfGui\Icon\tray_connecting.png">
+      <Link>Icon\tray_connecting.png</Link>
+    </Content>
+    <Content Include="..\globalwaves.Player.WpfGui\Icon\tray_playing.png">
+      <Link>Icon\tray_playing.png</Link>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>

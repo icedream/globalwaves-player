@@ -18,7 +18,7 @@ using NAudio.Wave.SampleProviders;
 using NAudio.Codecs;
 
 
-namespace globalwaves.Player.Backend
+namespace globalwaves.Player
 {
     public class StreamPlayer
     {
@@ -100,7 +100,7 @@ namespace globalwaves.Player.Backend
             }
         }
         private string _userAgent
-        { get { return string.Format("{0}/{1}", "gw-player", ApplicationInformation.Version.ToString()); } }
+        { get { return string.Format("{0}/{1}", "gw-player", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()); } }
 
         /// <summary>
         /// Stops the streaming.

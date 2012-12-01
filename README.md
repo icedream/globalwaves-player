@@ -12,18 +12,27 @@ to the streams on them. Right now it is only the "Trance" stream, but by the end
 of this week I will have added the following things:
 
 - Switching between channels
-- A nice GUI
+- A nice GUI (I decided for a metro GUI now)
 - Volume slider
-- Nice audio visualizations
+- Nice audio visualizations (in progress right now)
 
 Dependencies
 ------------
 
-I'm relying on NAudio and [future GUI library I will use here] to realize this
-player.
-You can get all things by installing NuGet into Visual Studio and let it do the
-dirty work, it will automatically integrate NAudio and build all the needed
-files.
+I'm relying on NAudio and Elysium.Theme to realize this player.
+<code>bootstrap.bat</code> will automatically download all the needed files for you, so
+that you don't need to manually install anything.
+
+What to do before compiling/opening the project
+-----------------------------------------------
+
+1. Run <code>bootstrap.bat</code> and let it download the libraries.
+
+Compiling without Visual Studio
+-------------------------------
+
+If you have .NET Framework 4.0/4.5 installed, but don't have Visual Studio,
+you can also use <code>build.bat</code> to compile the project without it.
 
 License
 -------

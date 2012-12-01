@@ -1,0 +1,13 @@
+﻿<metro:Window x:Class="globalwaves.Player.WpfGui.Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:metro="http://schemas.codeplex.com/elysium/theme"
+        Title="globalwaves Player" Height="300" Width="300" xmlns:my="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib" xmlns:my1="http://blog.lexique-du-net.com/wpf/AmazingWPFControls">
+    <Grid>
+        <my:SpectrumAnalyzer HorizontalAlignment="Left" Margin="12,12,0,0" Name="spaVisualization" VerticalAlignment="Top" Height="96" Width="254" AveragePeaks="True" />
+        <my:AlbumArtDisplay HorizontalAlignment="Left" Margin="12,114,0,0" Name="aadCover" VerticalAlignment="Top" Height="64" Width="64" />
+        <Label Content="Label" Height="38" HorizontalAlignment="Left" Margin="82,114,0,0" Name="lblTitle" VerticalAlignment="Top" Width="184" FontSize="18" />
+        <Label Content="Label" Height="28" HorizontalAlignment="Left" Margin="82,150,0,0" Name="lblArtist" VerticalAlignment="Top" Width="184" />
+        <metro:ToggleSwitch Height="16" HorizontalAlignment="Left" Margin="191,92,0,0" Name="toggleSwitch1" VerticalAlignment="Top" Checked="toggleSwitch1_Checked" Width="75" Unchecked="toggleSwitch1_Unchecked" />
+    </Grid>
+</metro:Window>
