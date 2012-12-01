@@ -217,10 +217,17 @@ namespace globalwaves.Player.Gui
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            Rectangle rc = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            using (System.Drawing.Drawing2D.LinearGradientBrush brush = new System.Drawing.Drawing2D.LinearGradientBrush(rc, Color.DarkBlue, Color.RoyalBlue, 45F))
+            try
             {
-                e.Graphics.FillRectangle(brush, rc);
+                Rectangle rc = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                using (System.Drawing.Drawing2D.LinearGradientBrush brush = new System.Drawing.Drawing2D.LinearGradientBrush(rc, Color.DarkBlue, Color.RoyalBlue, 45F))
+                {
+                    e.Graphics.FillRectangle(brush, rc);
+                }
+            }
+            catch
+            {
+                { } // Ignore any errors here, for example 0-size rectangle when becoming invisible while becoming visible (maximize => minimize fast)
             }
         }
 
