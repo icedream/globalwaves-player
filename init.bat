@@ -15,7 +15,7 @@ call check-hg
 if %errorlevel% neq 0 goto E_EXIT 
 
 ::call init-nuget
-::call init-svn https://bling.svn.codeplex.com/svn/bling4/Bling.Core/ bling4_core
+call init-svn https://metrotoolkit.svn.codeplex.com/svn metrotoolkit
 call init-hg https://hg.codeplex.com/naudio naudio
 ::call init-hg https://hg.codeplex.com/oggsharp oggsharp
 ::call init-git https://git01.codeplex.com/nvorbis nvorbis
