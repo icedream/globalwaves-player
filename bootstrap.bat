@@ -32,6 +32,6 @@ xecho /a:%col_ok% Finished.
 exit /B 0
 
 :E_EXIT
-xecho /a:%col_err% Bootstrapping failed, error code: %errorlevel%
+xecho /a:%col_err% "Bootstrapping failed, error code: %errorlevel%"
 pause
 exit /B -1

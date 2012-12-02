@@ -15,7 +15,7 @@
               Foreground="White" Background="White"
               Title="globalwaves Player"
               Height="435" Width="606"
-              MinWidth="370" Closing="Window_Closing" IsEnabled="True">
+              MinWidth="370" Closing="Window_Closing" IsEnabled="True" Icon="/globalwaves.Player.WpfGui;component/Icon/icon_satellite.ico">
     <metro:Window.ApplicationBar>
         <metro:ApplicationBar>
             <!-- Right Click on the UI to open Application Bar -->

@@ -1,7 +1,7 @@
 @echo off
 
 :: Check git ::
-xecho /a:%col_stat% Checking if git is accessible...
+xecho /a:%col_stat% "Checking if git is accessible..."
 git --version >NUL 2>NUL
 if %errorlevel% neq 0 goto E
 exit /B 0

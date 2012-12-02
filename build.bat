@@ -1,6 +1,6 @@
 @echo off
 
-path %path%;%cd%\tools       
+path %path%;%cd%\tools;.\tools      
 set col_stat=e
 set col_err=c
 set col_dbg=8
