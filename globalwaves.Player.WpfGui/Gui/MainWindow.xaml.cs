@@ -150,6 +150,7 @@ namespace globalwaves.Player.WpfGui.Gui
         delegate void metadataChangedDelegate(object sender, EventArgs e);
         void player_MetadataChanged(object sender, EventArgs e)
         {
+
             Console.WriteLine("[MainWindow] player_MetadataChanged() called with access={0}", this.Dispatcher.CheckAccess());
             if (!this.IsVisible)
                 return;
@@ -162,8 +163,8 @@ namespace globalwaves.Player.WpfGui.Gui
                 var g = System.Text.RegularExpressions.Regex.Match(player.Metadata, @"^(?<artist>.+) \- (?<title>.+)$").Groups;
                 metadata.Artist = g["artist"].Value;
                 metadata.Title = g["title"].Value;
-
                 metadata.ShowLoader = false;
+                ToastNotification.Show(metadata.Artist + ": " + metadata.Title, "now on air");
             }
             else
                 this.Dispatcher.Invoke(
