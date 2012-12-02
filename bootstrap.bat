@@ -7,6 +7,8 @@ set col_dbg=8
 set col_proc=7
 set col_ok=2
 
+@mkdir "libraries" 2>NUL >NUL
+
 call check-nuget     
 if %errorlevel% neq 0 goto E_EXIT
 
@@ -18,6 +20,7 @@ if %errorlevel% neq 0 goto E_EXIT
 
 call check-hg     
 if %errorlevel% neq 0 goto E_EXIT 
+
 
 call init-nuget
 call init-git https://github.com/JamesNK/Newtonsoft.Json.git json.net
