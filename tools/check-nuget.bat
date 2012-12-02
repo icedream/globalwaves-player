@@ -1,12 +1,12 @@
 @echo off
 
 :: NuGet detection
-echo Detecting how to run NuGet...|xecho /a:F
+xecho /a:%col_stat% Detecting how to run NuGet...
                           
 set nuget=NuGet.exe
 %nuget% config 2>NUL >NUL
 if %errorlevel% equ 0 goto fin
-
+                      
 set nuget="%cd%\.nuget\NuGet.exe"
 %nuget% config 2>NUL >NUL
 if %errorlevel% equ 0 goto fin
@@ -28,5 +28,5 @@ exit /B -1
 set nugetopt=-NonInteractive
 if "%1"=="--set-verbose" set nugetopt=-Verbose -Verbosity "detailed" %nugetopt%
 if "%1"=="--set-quiet" set nugetopt=-Verbosity "quiet" %nugetopt%
-echo %nuget% %nugetopt%|xecho /f:"\t{}" /a:8
+xecho /a:%col_dbg% /f:"\t{}" %nuget% %nugetopt%
 exit /B 0

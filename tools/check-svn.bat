@@ -1,7 +1,7 @@
 @echo off
 
 :: Check Subversion ::
-echo Checking if Subversion is accessible... | xecho /a:f
+xecho /a:%col_stat% Checking if Subversion is accessible...
 svn --version >NUL 2>NUL
 if %errorlevel% neq 0 goto E
 exit /B 0

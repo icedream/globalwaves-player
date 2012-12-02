@@ -4,10 +4,10 @@ set name=%2
 set target=libraries\%name%
 
 if not exist "%target%\.svn\wc.db" (
-	echo Cloning library "%name%"... |xecho /a:f
-	svn co --non-interactive --trust-server-cert %url% "%target%" | xecho /a:7 /f:"\t{}"
+	xecho /a:%col_stat% Downloading library "%name%"...
+	svn co --non-interactive --trust-server-cert %url% "%target%" | xecho /a:%col_proc% /f:"\t{}"
 ) else (
-	echo Fetching updates for library "%name%"... |xecho /a:f
-	svn cleanup --non-interactive "%target%" | xecho /a:8 /f:"\t{}"
-	svn up --non-interactive "%target%"  | xecho /a:7 /f:"\t{}"
+	xecho /a:%col_stat% Updating library "%name%"...
+	svn cleanup --non-interactive "%target%" | xecho /a:%col_proc% /f:"\t{}"
+	svn up --non-interactive "%target%"  | xecho /a:%col_proc% /f:"\t{}"
 )

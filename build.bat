@@ -1,19 +1,21 @@
 @echo off
 
-path %path%;%cd%\tools
-
-::echo Updating submodules...
-::git submodule update --init
+path %path%;%cd%\tools       
+set col_stat=e
+set col_err=c
+set col_dbg=8
+set col_proc=7
+set col_ok=2
 
 set netfx_dir_flag=0
 
-xecho /a:f /nolf "Finding compiler..." 
+xecho /a:%col_stat% /nolf "Finding compiler..." 
 
 :BUILD_WITH_NETFX
 msbuild.exe /version >NUL 2>NUL
 if %errorlevel% neq 0 if not "%netfx_dir_flag"=="0" goto FIND_NETFX
-msbuild.exe /version | xecho /nolf /f:"{1:s} " | xecho /a:f /f:" .NET compiler v{4:s}"
-xecho /a:f "Compiling..."
+msbuild.exe /version | xecho /nolf /f:"{1:s} " | xecho /a:%col_ok% /f:" .NET compiler v{4:s}"
+xecho /a:%col_stat% "Compiling..."
 msbuild.exe "globalwaves Player.sln" /maxcpucount /toolsversion:4.0 /verbosity:m /nologo /p:Configuration=Release
 msbuild.exe "globalwaves Player.sln" /maxcpucount /toolsversion:4.0 /verbosity:m /nologo /p:Configuration=Debug
 if %ERRORLEVEL% NEQ 0 goto BUILD_NOT
@@ -29,7 +31,7 @@ set dotnetpath=%windir%\Microsoft.NET\Framework\%dotnetversion%
 "%dotnetpath%\msbuild.exe" /version >NUL 2>NUL
 if %errorlevel% neq 0 goto BUILD_NOT
 path %path%;%dotnetpath%
-echo .NET framework %dotnetversion% (not in path),|xecho /a:f /nolf /f:" {}"
+xecho /a:%col_ok% /nolf /f:" {}" ".NET framework %dotnetversion% (not in path),"
 goto BUILD_WITH_NETFX
 
 :: :BUILD_WITH_MONO

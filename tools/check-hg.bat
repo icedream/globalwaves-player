@@ -1,7 +1,7 @@
 @echo off
 
 :: Check Mercurial ::
-echo Checking if Mercurial is accessible... | xecho /a:f
+xecho /a:%col_stat% Checking if Mercurial is accessible...
 hg --version >NUL 2>NUL
 if %errorlevel% neq 0 goto E
 exit /B 0

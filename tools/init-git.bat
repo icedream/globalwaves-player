@@ -4,11 +4,11 @@ set name=%2
 set target=libraries\%name%
 
 if not exist "%target%\.git\index" (
-	echo Cloning library "%name%"... |xecho /a:f
-	git clone %url% "%target%" |xecho /f:"\t{}" /a:8
+	xecho /a:%col_stat% Downloading library "%name%"...
+	git clone -v %url% "%target%" |xecho /f:"\t{}" /a:%col_proc%
 ) else (
-	echo Fetching updates for library "%name%"... |xecho /a:f
+	xecho /a:%col_stat% Updating library "%name%"...
 	pushd "%target%"
-  git pull |xecho /f:"\t{}" /a:8
+  git pull -v |xecho /f:"\t{}" /a:%col_proc%
   popd
 )
