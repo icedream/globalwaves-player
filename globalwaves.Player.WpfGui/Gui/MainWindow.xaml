@@ -1,13 +1,52 @@
 ﻿<metro:Window x:Class="globalwaves.Player.WpfGui.Gui.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:metro="http://schemas.codeplex.com/elysium/theme"
-        Title="globalwaves Player" Height="300" Width="300" xmlns:my="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib" xmlns:my1="http://blog.lexique-du-net.com/wpf/AmazingWPFControls">
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:metro="http://schemas.codeplex.com/elysium/theme"
+              xmlns:my="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
+              xmlns:my1="http://blog.lexique-du-net.com/wpf/AmazingWPFControls"
+              xmlns:my2="clr-namespace:WPFSpark;assembly=WPFSpark"
+              xmlns:my3="clr-namespace:globalwaves.Player.WpfGui.Gui"
+              xmlns:my4="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon"
+              xmlns:my5="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib,Version=0.2.4110.32775,Culture=neutral,PublicKeyToken=eb44ed7102b4fcc1"
+              Closed="Window_Closed"
+              ResizeMode="NoResize"
+              WindowStartupLocation="CenterScreen"
+              WindowStyle="SingleBorderWindow"
+              Foreground="White" Background="White"
+              Title="globalwaves Player"
+              Height="435" Width="606"
+              MinWidth="370" Closing="Window_Closing" IsEnabled="True">
+    <metro:Window.ApplicationBar>
+        <metro:ApplicationBar>
+            <!-- Right Click on the UI to open Application Bar -->
+            <metro:DropDownCommandButton Header="Channels"/>
+        </metro:ApplicationBar>
+    </metro:Window.ApplicationBar>
     <Grid>
-        <my:SpectrumAnalyzer HorizontalAlignment="Left" Margin="12,12,0,0" Name="spaVisualization" VerticalAlignment="Top" Height="96" Width="254" AveragePeaks="True" />
-        <my:AlbumArtDisplay HorizontalAlignment="Left" Margin="12,114,0,0" Name="aadCover" VerticalAlignment="Top" Height="64" Width="64" />
-        <Label Content="Label" Height="38" HorizontalAlignment="Left" Margin="82,114,0,0" Name="lblTitle" VerticalAlignment="Top" Width="184" FontSize="18" />
-        <Label Content="Label" Height="28" HorizontalAlignment="Left" Margin="82,150,0,0" Name="lblArtist" VerticalAlignment="Top" Width="184" />
-        <metro:ToggleSwitch Height="16" HorizontalAlignment="Left" Margin="191,92,0,0" Name="toggleSwitch1" VerticalAlignment="Top" Checked="toggleSwitch1_Checked" Width="75" Unchecked="toggleSwitch1_Unchecked" />
+        <Grid.Background>
+            <RadialGradientBrush>
+                <GradientStop Color="LightSteelBlue" Offset="0" />
+                <GradientStop Color="White" Offset="1.8" />
+            </RadialGradientBrush>
+        </Grid.Background>
+        <DockPanel
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            Margin="0,0,0,0"
+            LastChildFill="True"
+            Name="contentDockPanel">
+            <TabControl
+                Name="channelsPanel"
+                Background="White" Height="38"
+                DockPanel.Dock="Top" SelectionChanged="channelsPanel_SelectionChanged" OverridesDefaultStyle="True" IsHitTestVisible="True" IsEnabled="True" Foreground="White" BorderBrush="White"></TabControl>
+            <DockPanel HorizontalAlignment="Stretch" Height="54" Name="dockPanel1" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Background="White">
+                    <Button Content="Play" Name="streamToggle" Width="91" IsEnabled="False" Click="streamToggle_Click" Padding="0" IsDefault="True" ClipToBounds="True" HorizontalAlignment="Right" VerticalAlignment="Stretch" DockPanel.Dock="Right" />
+                    <my3:MarqueeContentPanel x:Name="metadata" Foreground="DarkBlue" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" />
+            </DockPanel>
+            <my5:SpectrumAnalyzer Name="spaVisualization">
+                <my:SpectrumAnalyzer.Background>
+                    <SolidColorBrush />
+                </my:SpectrumAnalyzer.Background>
+            </my5:SpectrumAnalyzer>
+        </DockPanel>
     </Grid>
 </metro:Window>

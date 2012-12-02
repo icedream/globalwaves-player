@@ -201,7 +201,7 @@ namespace globalwaves.Player
                         _bufferThread = Task.Factory.StartNew(() => _bufferLoop(), _cancel_buffer_token);
                         _playThread = Task.Factory.StartNew(() => _play(), _cancel_play_token);
                         Console.WriteLine("Load thread now sleeping, waiting until play thread finishes.");
-                        _playThread.Wait(_cancel_play_token);
+                        _playThread.Wait(_cancel_buffer_token);
                     }
                     catch (OperationCanceledException)
                     {
@@ -278,10 +278,11 @@ namespace globalwaves.Player
                     Output.Stop();
                     Console.WriteLine("[Playback thread] Output stopped.");
                     this.Status = StreamStatus.Stopped;
+                    Console.WriteLine("[Playback thread] Acknowledged as status.");
 
                     //_cancel_play_token.ThrowIfCancellationRequested();
                     //Console.WriteLine("[Playback thread] WARNING: Cancellation token is not cleanly set!");
-                    break;
+                    return;
                 }
 
                 if (Output.PlaybackState != PlaybackState.Playing && _wavebuffer.BufferedDuration.TotalMilliseconds > 2750)
@@ -400,7 +401,8 @@ namespace globalwaves.Player
             } while (true);
 
             _decoderMp3.Dispose();
-
+            stream.Close();
+            stream.Dispose();
         }
     }
 }
