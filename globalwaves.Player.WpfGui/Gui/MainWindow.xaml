@@ -22,6 +22,30 @@
             <metro:DropDownCommandButton Header="Channels"/>
         </metro:ApplicationBar>
     </metro:Window.ApplicationBar>
+    <Window.CommandBindings>
+        <CommandBinding Command="MediaCommands.Play" x:Name="PlayCommand" 
+                        Executed="PlayCommand_Executed"
+                        CanExecute="PlayCommand_CanExecute"/>
+        <CommandBinding Command="MediaCommands.Stop" x:Name="StopCommand"
+                        Executed="StopCommand_Executed"
+                        CanExecute="StopCommand_CanExecute"/>
+    </Window.CommandBindings>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo Description="Control your media" ThumbnailClipMargin="5">
+            <TaskbarItemInfo.ThumbButtonInfos>
+                <ThumbButtonInfoCollection>
+                    <ThumbButtonInfo x:Name="ThumbPlayButton" Command="MediaCommands.Play" 
+                                     DismissWhenClicked="False"
+                                     Description="Play" 
+                                     ImageSource="/globalwaves.Player.WpfGui;component/Icon/cmd_play.png" />
+                    <ThumbButtonInfo x:Name="ThumbStopButton" Command="MediaCommands.Stop" 
+                                     DismissWhenClicked="False"
+                                     Description="Stop"
+                                     ImageSource="/globalwaves.Player.WpfGui;component/Icon/cmd_stop.png" />
+                </ThumbButtonInfoCollection>
+            </TaskbarItemInfo.ThumbButtonInfos>
+        </TaskbarItemInfo>
+    </Window.TaskbarItemInfo>
     <Grid>
         <Grid.Background>
             <RadialGradientBrush>

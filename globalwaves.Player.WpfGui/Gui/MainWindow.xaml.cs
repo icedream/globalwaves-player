@@ -147,10 +147,29 @@ namespace globalwaves.Player.WpfGui.Gui
             }
         }
 
+        private void PlayCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = !player.IsPlaying && !string.IsNullOrEmpty(player.Channel);
+        }
+
+        private void StopCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = player.IsPlaying;
+        }
+
+        private void PlayCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            player.Play();
+        }
+
+        private void StopCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            player.Stop(false);
+        }
+
         delegate void metadataChangedDelegate(object sender, EventArgs e);
         void player_MetadataChanged(object sender, EventArgs e)
         {
-
             Console.WriteLine("[MainWindow] player_MetadataChanged() called with access={0}", this.Dispatcher.CheckAccess());
             if (!this.IsVisible)
                 return;
