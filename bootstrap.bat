@@ -1,6 +1,6 @@
 @echo off
-path %path%;%cd%\tools
-::SETLOCAL ENABLEDELAYEDEXPANSION
+path %path%;%cd%\tools;%cd%\.nuget;tools;.nuget
+::setlocal enabledelayedexpansion
 set col_stat=e
 set col_err=c
 set col_dbg=8
@@ -9,13 +9,10 @@ set col_ok=2
 
 call check-nuget     
 if %errorlevel% neq 0 goto E_EXIT
-
 call check-svn
 if %errorlevel% neq 0 goto E_EXIT
-
-::call check-git                   
-::if %errorlevel% neq 0 goto E_EXIT
-
+call check-git                   
+if %errorlevel% neq 0 goto E_EXIT
 call check-hg     
 if %errorlevel% neq 0 goto E_EXIT 
 

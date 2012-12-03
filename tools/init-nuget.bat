@@ -1,7 +1,9 @@
 @echo off
 
+set EnableNuGetPackageRestore=true
+
 ::if "%1"=="-self" (
-::	echo * Updating NuGet...
+::	xecho /a:%col_stat% "Updating NuGet..."
 ::	%nuget% update %nugetopt% -Self
 ::)
 
