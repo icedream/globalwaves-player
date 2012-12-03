@@ -1,8 +1,10 @@
 @echo off
 
+set EnableNuGetPackageRestore=true
+
 :: NuGet detection
 xecho /a:%col_stat% "Detecting how to run NuGet..."
-                          
+
 set nuget=NuGet.exe
 %nuget% config 2>NUL >NUL
 if %errorlevel% equ 0 goto fin
