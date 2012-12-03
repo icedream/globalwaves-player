@@ -1,5 +1,7 @@
 @echo off
-path %path%;%cd%\tools;%cd%\.nuget;tools;.nuget
+path %path%;%cd%\tools
+path %path%;%cd%\.nuget
+path %path%;%cd%\tools\svn\bin
 ::setlocal enabledelayedexpansion
 set col_stat=e
 set col_err=c
