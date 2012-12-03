@@ -7,6 +7,8 @@ set col_dbg=8
 set col_proc=7
 set col_ok=2
 
+if not exist libraries mkdir libraries
+
 call check-nuget     
 if %errorlevel% neq 0 goto E_EXIT
 call check-svn
