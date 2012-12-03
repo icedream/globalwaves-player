@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -41,9 +41,6 @@
     <ApplicationIcon>Icon\icon_satellite.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AmazingWPFControls">
-      <HintPath>D:\Libs\AmazingsWPFControls - Release 1.0\AmazingWPFControls\AmazingWPFControls.dll</HintPath>
-    </Reference>
     <Reference Include="Elysium.Theme">
       <HintPath>..\packages\Elysium.Theme.1.3\lib\net40\Elysium.Theme.dll</HintPath>
     </Reference>
