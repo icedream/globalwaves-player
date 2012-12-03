@@ -1,5 +1,7 @@
 @echo off
 
+set EnableNuGetPackageRestore=true
+
 path %path%;%cd%\tools;.\tools      
 set col_stat=e
 set col_err=c
