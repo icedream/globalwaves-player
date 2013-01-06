@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="125" d:DesignWidth="410" xmlns:my="clr-namespace:WPFSpark;assembly=WPFSpark">
+             d:DesignHeight="125" d:DesignWidth="410" xmlns:my="clr-namespace:WPFSpark;assembly=WPFSpark" ClipToBounds="True">
     <Canvas Background="Transparent" Height="54">
         <Label Canvas.Left="0" Canvas.Top="0" Content="orodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeo" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=Foreground}" Height="Auto" Name="title" Width="Auto" SnapsToDevicePixels="False" IsManipulationEnabled="False" FontSize="16" FontFamily="Segoe UI" FontWeight="Normal" FontStyle="Normal" FontStretch="Normal" UseLayoutRounding="False" />
         <Label Canvas.Left="0" Canvas.Top="27" Content="orodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeoorodeo" FontFamily="Segoe UI" FontSize="11" FontStretch="Normal" FontStyle="Normal" FontWeight="Normal" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=Foreground}" Height="Auto" IsManipulationEnabled="False" Name="artist" SnapsToDevicePixels="False" Width="Auto" UseLayoutRounding="False" />
